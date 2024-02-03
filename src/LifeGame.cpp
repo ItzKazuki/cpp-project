@@ -258,34 +258,59 @@ class Player {
 };
 
 int main() {
-    // buat alat perang
-    Sword pedangBesi("pedangBesi", 10, 5);
 
-    // params: nama, umur, status
-    Player andi("Andi", 16, "Pengembara");
-    Player npc1("yudi", 14, "Deamon");
+    string namaPlayer;
+    int umurPlayer;
+    string statusPlayer;
+
+    cout << "Player 1 \n";
+    cout << "Masukan nama player: ";
+    getline(cin, namaPlayer);
+    // cin >> namaplayer;
+
+    cout << "Masukan status player: ";
+    getline(cin, statusPlayer);
+
+    cout << "Masukan umur player: ";
+    // getline(cin, namaplayer); // khusus string
+    cin >> umurPlayer; // khusus int
+
+    cout <<endl;
+
+    Player player1(namaPlayer, umurPlayer, statusPlayer);
+    player1.getPlayerInfo();
+
+    
+    // // buat alat perang
+    // Sword pedangBesi("Pedang Besi", 10, 5);
+    // Sword pedangEmas("Pedang Emas", 25, 10);
+
+    // // params: nama, umur, status
+    // Player andi("Andi", 16, "Pengembara");
+    // Player npc1("yudi", 14, "Deamon");
+    // Player npc2("adi", 14, "Pengembara");
 
 
-    // params: name_food, food_value, is_expired
-    Food ayamGeprek("Ayam Geprek", 10, false);
-    Drink esKelapa("Es Kelapa", 15, false);
+    // // params: name_food, food_value, is_expired
+    // Food ayamGeprek("Ayam Geprek", 10, false);
+    // Drink esKelapa("Es Kelapa", 15, false);
 
-    // contoh encapsulation
-    // cout << "Name: " << andi.name <<endl; // ga bisa di akses, inaccesable
-    // ayamGeprek.name;
+    // // contoh encapsulation
+    // // cout << "Name: " << andi.name <<endl; // ga bisa di akses, inaccesable
+    // // ayamGeprek.name;
 
-    andi.getPlayerInfo(); // method ini bisa di akses karena berada dipublic
-    andi.runing(10);
-    andi.getPlayerInfo();
-    andi.eating(ayamGeprek);
-    andi.getPlayerInfo();
-    andi.setSword(pedangBesi);
-    andi.drinking(esKelapa);
-    andi.getPlayerInfo();
-    andi.runing(13);
-    andi.getPlayerInfo();
-    andi.attack(npc1); // aneh, gua ga bisa nyerang dia, harus dia yang nyerang gua.
-    npc1.getPlayerInfo();
+    // andi.getPlayerInfo(); // method ini bisa di akses karena berada dipublic
+    // andi.runing(10);
+    // andi.getPlayerInfo();
+    // andi.eating(ayamGeprek);
+    // andi.getPlayerInfo();
+    // andi.setSword(pedangBesi);
+    // andi.drinking(esKelapa);
+    // andi.getPlayerInfo();
+    // andi.runing(13);
+    // andi.getPlayerInfo();
+    // andi.attack(npc1); // aneh, gua ga bisa nyerang dia, harus dia yang nyerang gua.
+    // npc1.getPlayerInfo();
 
     // todo: buat switch case di mana user bisa pilih pilihan 1, 2, 3 etc dan bisa cek health, playerInfo, etc dah lewat console/ cmd/ cli.
 
