@@ -3,6 +3,31 @@
 
 using namespace std;
 
+class Backpack {
+    private:
+        Sword sword; // sword 1
+        Shield shield;
+        Drink drink[4];
+        Food food[4];
+    public:
+        void insert() {
+
+        }
+};
+
+class Shield {
+    public:
+        std::string name;
+        int defense;
+        int level;
+
+        Shield(const std::string name, int defense, int level) {
+            this->name = name;
+            this->defense = defense;
+            this->level = level;
+        }
+};
+
 class Sword {
     public:
         std::string name;
@@ -174,6 +199,7 @@ class Player {
         void getPlayerInfo() {
             this->checkHealth(); // buat cek health nya
             this->checkEmotion(); // buat cek emotion nya
+            // this->printBackpack();  inheritence
 
             cout << "========= User Info ==========" <<endl;
             cout << "Name: " << this->name <<endl;
@@ -256,6 +282,10 @@ class Player {
             this->getDamage(opponent.userSword);
         }
 };
+
+void createRandomNPC() {
+    
+}
 
 int main() {
 
