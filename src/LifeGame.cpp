@@ -3,84 +3,169 @@
 
 using namespace std;
 
-class Backpack {
-    private:
-        Sword sword; // sword 1
-        Shield shield;
-        Drink drink[4];
-        Food food[4];
-    public:
-        void insert() {
-
-        }
-};
+// TODO: buat class backpack, dimana bisa input sword, shield, food, etc dah woaowkoakow 
 
 class Shield {
-    public:
-        std::string name;
+    private:
+        string name;
         int defense;
-        int level;
+        int stars; // ga boleh > 5
 
-        Shield(const std::string name, int defense, int level) {
+        void setValue(string name, int defense, int stars) {
             this->name = name;
             this->defense = defense;
-            this->level = level;
+            this->stars = stars;
+        }
+    public:
+        Shield(const string name) {
+            this->setShield(name);
+        }
+
+        string getName() {
+            return this->name;
+        }
+
+        void setShield(string name) {
+            if(name == "tamengKayu") {
+                this->name = name;
+                this->defense = 5;
+                this->stars = 1;
+            } else {
+                cout << "can't find the shield.\n" <<endl;
+                // this->~Shield();
+            }
         }
 };
 
 class Sword {
-    public:
-        std::string name;
+    private:
+        string name;
         int damage;
-        int level;
+        int stars; // ga boleh > 5
 
-        Sword(const std::string name, int damage, int level) {
+        void setValue(string name, int damage, int stars) {
             this->name = name;
             this->damage = damage;
-            this->level = level;
+            this->stars = stars;
+        }
+
+    public:
+        Sword(const string name) {
+            this->setSword(name);
+        }
+
+        string getName() {
+            return this->name;
+        }
+
+        int getDamage() {
+            return this->damage;
+        }
+
+        void setSword(string name) {
+            if(name == "pedangKayu") {
+                // do something
+                this->setValue(name, 5, 1);
+            } else {
+                cout << "can't find the sword.\n" <<endl;
+            }
         }
 };
 
 class Drink {
-    public:
-        std::string name;
+    private:
+        string name;
         int drink_value; // ga boleh lebih dari 40
         bool is_expired = false;
+        int stars; // ga boleh > 5
 
-        Drink(const std::string& name, int drink_value, bool is_exp) {
+        void setValue(string name, int value, bool exp, int star) {
             this->name = name;
-            this->drink_value = drink_value;
-            this->is_expired = is_exp;
+            this->drink_value = value;
+            this->is_expired = exp;
+            this->stars = star;
         }
+
+    public:
+        Drink(const string& name) {
+            this->setDrink(name);
+        }
+
+        string getName() {
+            return this->name;
+        }
+
+        int getDrinkValue() {
+            return this->drink_value;
+        }
+
+        bool getExpired() {
+            return this->is_expired;
+        }
+
+        void setDrink(string name) {
+            if(name == "Es Kelapa") {
+                // do something
+                this->setValue(name, 15, false, 3);
+            } else {
+                // do something
+            }
+        } 
 };
 
 class Food {
-    public:
-        std::string name;
+    private:
+        string name;
         int food_value; // ga boleh > 40
         bool is_expired = false;
+        int level;
 
-        Food(const std::string& name, int food_value, bool is_exp) {
+        void setValue(string name, int value, bool exp, int level) {
             this->name = name;
-            this->food_value = food_value;
-            this->is_expired = is_exp;
+            this->food_value = value;
+            this->is_expired = exp;
+            this->level = level;
+        }
+    public:
+        Food(const string& name) {
+            this->setFood(name);
         };
+
+        string getName() {
+            return this->name;
+        }
+
+        int getFoodValue() {
+            return this->food_value;
+        }
+
+        bool getExpired() {
+            return this->is_expired;
+        }
+
+        void setFood(string name) {
+            if(name == "Ayam Geprek") {
+                this->setValue(name, 10, false, 3);
+            } else {
+                // do something
+            }
+        }
 };
 
 // class ini mempunyai properti nama, umur, status, health, hugry_level
 class Player {
     // encapsulation: yang ada di dalam private tidak dapat di akses ke luar
     private: 
-        std::string name; // mending pake std::string daripada char, char ribet soalnya.
+        string name; // mending pake string daripada char, char ribet soalnya.
         int umur;
-        std::string status;
+        string status;
         int health = 100; // default value
         int hungry_level = 100;
         int thirsty_level = 100;
-        std::string emotion = "happy";
-        int stars = 1;
+        string emotion = "happy";
         int level = 1;
-        Sword userSword = Sword("pedangKayu", 5, 1);
+        Sword userSword = Sword("pedangKayu");
+        Shield userShield = Shield("tamengKayu");
 
         // this method use getter setter and encapsulation
         void decereaseHungry(int value) {
@@ -102,55 +187,55 @@ class Player {
         }
 
         void incereaseLevel(Food food) {
-            if(food.food_value >= 10 && food.food_value <= 14) {
+            if(food.getFoodValue() >= 10 && food.getFoodValue() <= 14) {
                 this->level += 1;
             }
 
-            if(food.food_value >= 15 && food.food_value <= 19) {
+            if(food.getFoodValue() >= 15 && food.getFoodValue() <= 19) {
                 this->level += 1.5;
             }
 
-            if(food.food_value >= 20 && food.food_value <= 24) {
+            if(food.getFoodValue() >= 20 && food.getFoodValue() <= 24) {
                 this->level += 2;
             }
 
-            if(food.food_value >= 25 && food.food_value <= 29) {
+            if(food.getFoodValue() >= 25 && food.getFoodValue() <= 29) {
                 this->level += 2.5;
             }
 
-            if(food.food_value >= 30 && food.food_value <= 34) {
+            if(food.getFoodValue() >= 30 && food.getFoodValue() <= 34) {
                 this->level += 3;
             }
 
-            if(food.food_value >= 35 && food.food_value <= 39) {
+            if(food.getFoodValue() >= 35 && food.getFoodValue() <= 39) {
                 this->level += 4;
             }
 
-            if(food.food_value == 40) {
+            if(food.getFoodValue() == 40) {
                 this->level += 5;
             }
         }
 
-        // di cek kalo exp(food nya) bakalan ngurangin health 3x dari food_value nya
+        // di cek kalo exp(food nya) bakalan ngurangin health 3x dari getFoodValue() nya
         void inceraseHungry(Food food) {
-            // dicek kalo food_value nya > 25 / 35 change emotion ke happy (kan makannanya enak)
-            if(food.is_expired) {
+            // dicek kalo getFoodValue() nya > 25 / 35 change emotion ke happy (kan makannanya enak)
+            if(food.getExpired()) {
                 this->emotion = "angry";
-                this->decereaseHealth(food.food_value * 3);
-                this->decereaseHungry(food.food_value * 2);
+                this->decereaseHealth(food.getFoodValue() * 3);
+                this->decereaseHungry(food.getFoodValue() * 2);
             } else {
-                this->hungry_level += food.food_value;
+                this->hungry_level += food.getFoodValue();
                 this->incereaseLevel(food);
             }
         }
 
         void incereasethirsty(Drink drink) {
-            if(drink.is_expired) {
+            if(drink.getExpired()) {
                 this->emotion = "angry";
-                this->decereaseHealth(drink.drink_value * 2);
-                this->decereaseThirsty(drink.drink_value * 4);
+                this->decereaseHealth(drink.getDrinkValue() * 2);
+                this->decereaseThirsty(drink.getDrinkValue() * 4);
             } else {
-                this->thirsty_level += drink.drink_value;
+                this->thirsty_level += drink.getDrinkValue();
             }
         }
 
@@ -189,7 +274,7 @@ class Player {
     // bisa diakses oleh siapa saja
     public:
         // constructor
-        Player(const std::string& name, int umur, const std::string& status) {
+        Player(const string& name, int umur, const string& status) {
             this->name = name;
             this->umur = umur;
             this->status = status;
@@ -201,10 +286,11 @@ class Player {
             this->checkEmotion(); // buat cek emotion nya
             // this->printBackpack();  inheritence
 
-            cout << "========= User Info ==========" <<endl;
+            cout << "========= User Info ============" <<endl;
             cout << "Name: " << this->name <<endl;
             cout << "Umur: " << this->umur <<endl;
-            cout << "Alat Perang: " << this->userSword.name <<endl;
+            cout << "Alat Perang: " << this->userSword.getName() <<endl;
+            cout << "Alat Perang: " << this->userShield.getName() <<endl;
             cout << "Level: " << this->level <<endl;
             cout << "Emotion: " << this->emotion <<endl;
             cout << "Status: " << this->status <<endl;
@@ -223,13 +309,13 @@ class Player {
         // method untuk makan
         void eating(Food food) {
             this->inceraseHungry(food);
-            cout << "sedang memakan " << food.name << "\n" <<endl;
+            cout << "sedang memakan " << food.getName() << "\n" <<endl;
         }
 
         // method untuk minum
         void drinking(Drink drink) {
             this->incereasethirsty(drink);
-            cout << "sedang meminum " << drink.name << "\n" <<endl;
+            cout << "sedang meminum " << drink.getName() << "\n" <<endl;
         }
 
         void runing(int speed) {
@@ -267,82 +353,65 @@ class Player {
             this->inceraseHealth(20);
         }
 
-        void getDamage(Sword sword) {
-            this->decereaseHealth(sword.damage);
+        Sword getSword() {
+            return this->userSword;
         }
 
-        void attack(Player opponent) {
-            if(opponent.level >= this->level) {
-                // kurangin darah dengan alat yang dia pegang
-           //     opponent.getDamage(this->userSword);
-               cout << "tidak bisa menyerang " << opponent.name << "karena perbedaan level "<<endl; 
-            }
-		// ga bisa ngurangin darah musuh karena 
+        void getAttack(int attack) {
+            this->decereaseHealth(attack);
+        }
+
+        void attack(Player *opponent) {
+            // cpp anjhritt sumpa 
+            // gr gr pointer gua jd pusing.
+            // masi ga ngerti konsep pointer 
+            // ;( soalnya nyambung sama allokasi memori
+            opponent->getAttack(this->getSword().getDamage());
             
-            this->getDamage(opponent.userSword);
         }
 };
 
-void createRandomNPC() {
-    
-}
-
-int main() {
-
+Player* createPlayer() {
     string namaPlayer;
     int umurPlayer;
     string statusPlayer;
 
-    cout << "Player 1 \n";
-    cout << "Masukan nama player: ";
+    cout << "Welcome to the game! \n";
+    cout << "We need your information :>! \n";
+
+    cout << "Masukan nama kamu: ";
     getline(cin, namaPlayer);
     // cin >> namaplayer;
 
-    cout << "Masukan status player: ";
+    cout << "Masukan status kamu: ";
     getline(cin, statusPlayer);
 
-    cout << "Masukan umur player: ";
+    cout << "Masukan umur kamu: ";
     // getline(cin, namaplayer); // khusus string
     cin >> umurPlayer; // khusus int
 
     cout <<endl;
 
-    Player player1(namaPlayer, umurPlayer, statusPlayer);
-    player1.getPlayerInfo();
+    if(umurPlayer <= 12) {
+        cout << "Tidak dapat membuat player, masih terlalu muda" <<endl;
+        createPlayer();
+    }
 
-    
-    // // buat alat perang
-    // Sword pedangBesi("Pedang Besi", 10, 5);
-    // Sword pedangEmas("Pedang Emas", 25, 10);
+    Player *player = new Player(namaPlayer, umurPlayer, statusPlayer);
 
-    // // params: nama, umur, status
-    // Player andi("Andi", 16, "Pengembara");
-    // Player npc1("yudi", 14, "Deamon");
-    // Player npc2("adi", 14, "Pengembara");
+    return player;
+}
 
+int main() {
+    Player *player1 = createPlayer();
+    player1->getPlayerInfo();
 
-    // // params: name_food, food_value, is_expired
-    // Food ayamGeprek("Ayam Geprek", 10, false);
-    // Drink esKelapa("Es Kelapa", 15, false);
+    Player *player2 = new Player("random1", 16, "yey");
 
-    // // contoh encapsulation
-    // // cout << "Name: " << andi.name <<endl; // ga bisa di akses, inaccesable
-    // // ayamGeprek.name;
+    player1->attack(player2);
 
-    // andi.getPlayerInfo(); // method ini bisa di akses karena berada dipublic
-    // andi.runing(10);
-    // andi.getPlayerInfo();
-    // andi.eating(ayamGeprek);
-    // andi.getPlayerInfo();
-    // andi.setSword(pedangBesi);
-    // andi.drinking(esKelapa);
-    // andi.getPlayerInfo();
-    // andi.runing(13);
-    // andi.getPlayerInfo();
-    // andi.attack(npc1); // aneh, gua ga bisa nyerang dia, harus dia yang nyerang gua.
-    // npc1.getPlayerInfo();
-
-    // todo: buat switch case di mana user bisa pilih pilihan 1, 2, 3 etc dan bisa cek health, playerInfo, etc dah lewat console/ cmd/ cli.
+    player2->getPlayerInfo();
+    player1->getPlayerInfo();
 
     return 1;
 }   
