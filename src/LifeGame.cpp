@@ -4,9 +4,8 @@
 using namespace std;
 
 // TODO: buat class backpack, dimana bisa input sword, shield, food, etc dah woaowkoakow
-class Backpack
-{
-};
+
+// Dont forget concept DRY(Dont Repeat Yourself)
 
 class RarityItems
 {
@@ -15,6 +14,13 @@ private:
     bool rare = false;
 
 public:
+    // class above can access private property for this class.
+    friend class Sword;
+    friend class Shield;
+    friend class Food;
+    friend class Drink;
+    friend class Person;
+
     void setRare()
     {
         this->rare = true;
@@ -24,93 +30,38 @@ public:
     {
         this->stars = stars;
     }
-
-    bool getRarity()
-    {
-        return this->rare;
-    }
-
-    int getStars()
-    {
-        return this->stars;
-    }
 };
 
-class Shield : public RarityItems
-{
+// to set params
+class Items : public RarityItems {
 private:
-    string name;     // nama dari tameng
-    int health = 50; // health dari shield, jika dipakai berlebihan maka akan mengurangi health nya
-    int defense;     // pertahanan yang dihasilkan.
+    string name;
+    int value;
+    bool is_expired = false;
+public:
+    // class player can access private property.
+    friend class Player;
+    friend class Person;
 
-    void setValue(string name, int defense, int stars)
+    void setValue(string name, int value, bool exp, int stars)
     {
         this->name = name;
-        this->defense = defense;
+        this->value = value;
+        this->is_expired = exp;
+        // this->stars = star;
         this->setStars(stars);
-    }
-
-    void decerseHealth(int damage)
-    {
-        this->health -= damage;
-    }
-
-public:
-    Shield(const string name)
-    {
-        this->setShield(name);
-    }
-
-    string getName()
-    {
-        return this->name;
-    }
-
-    // use this method only for get defense value
-    int getDefense()
-    {
-        return this->defense;
-    }
-
-    // using this method can decerse health and return defencse value
-    int useDefense(string playerName)
-    {
-        // harusnya di cek, level player, sword player nya juga, biar bisa di decerse health nny berdasarkan stars dari weapon si opponent
-        cout << "\n"
-             << playerName << " using shield \n"
-             << endl;
-        this->decerseHealth(5);
-        return this->defense;
-    }
-
-    // int useDefense(Player player) {
-    //     // harusnya di cek, level player, sword player nya juga, biar bisa di decerse health nny berdasarkan stars dari weapon si opponent
-    //     cout << "\n" << player.getName() << " using shield \n" <<endl;
-    //     this->decerseHealth(5);
-    //     return this->defense;
-    // }
-
-    void setShield(string name)
-    {
-        if (name == "tamengKayu")
-        {
-            this->setValue(name, 5, 1);
-        }
-        else
-        {
-            cout << "can't find the shield.\n"
-                 << endl;
-            // this->~Shield();
-        }
-    }
+    }  
 };
 
-class Sword : public RarityItems
-{
+class AttackTools : public RarityItems {
 private:
     string name; // nama pedang
     int health = 50;
-    int damage; // damage yang dihasilkan pedang/
+    int damage; // damage yang dihasilkan pedang
+public:
+    // class player can access private property.
+    friend class Player;
+    friend class Person;
 
     void setValue(string name, int damage, int stars)
     {
@@ -125,31 +76,91 @@ private:
         this->health -= damage;
     }
 
+    // using this method to incerse health and return damage
+    // 1st params for player who 
+    template <typename Opponent1>
+    int useAttack(Opponent1 player1)
+    {
+        cout << "\n" << player1.name << " using sword " << endl;
+        cout << "\n" << player1.name << " attack with " << this->damage << "damage" << endl;
+        // if(is_same<Opponent2, Monster>::value) {
+        //     cout << "\n" << player1.name << " using shield \n" << endl;
+        // } else {
+        //     cout << "\n" << player1.name << " using shield \n" << endl;
+        // }
+
+        // if health == 0, destruc self!
+        this->decerseHealth(5);
+        return this->damage;
+    }
+};
+
+class DefenseTools : public RarityItems {
+private:
+    string name;     // nama dari tameng
+    int health = 50; // health dari shield, jika dipakai berlebihan maka akan mengurangi health nya
+    int defense;     // pertahanan yang dihasilkan.
+
+public:
+    // class player can access private property.
+    friend class Player;
+    friend class Person;
+
+    void setValue(string name, int defense, int stars)
+    {
+        this->name = name;
+        this->defense = defense;
+        this->setStars(stars);
+    }
+
+    void decerseHealth(int damage)
+    {
+        this->health -= damage;
+    }
+
+    // using this method can decerse health and return defencse value
+    // 1st param is person who using shield and 2nd params who person who attacking
+    template <typename Opponent1>
+    int useDefense(Opponent1 player)
+    {
+        // harusnya di cek, level player, sword player nya juga, biar bisa di decerse health nny berdasarkan stars dari weapon si opponent
+
+        cout << "\n" << player.name << " using shield " << endl;
+        cout << "\n" << player.name << " can hold "<< this->defense << " damage" << endl;
+        this->decerseHealth(5);
+        return this->defense;
+    }
+};
+
+class Shield : public DefenseTools
+{
+public:
+    Shield(const string name)
+    {
+        this->setShield(name);
+    }
+
+    void setShield(string name)
+    {
+        if (name == "tamengKayu")
+        {
+            this->setValue(name, 5, 1);
+        }
+        else
+        {
+            cout << "can't find the shield.\n" << endl;
+            delete this; // destruct self;
+        }
+    }
+};
+
+class Sword : public AttackTools
+{
+
 public:
     Sword(const string name)
     {
         this->setSword(name);
-    }
-
-    string getName()
-    {
-        return this->name;
-    }
-
-    // using this method only for getting damage
-    int getDamage()
-    {
-        return this->damage;
-    }
-    // using this method to incerse health and return damage
-    int useAttack(string playerName)
-    {
-        cout << "\n"
-             << playerName << " using sword \n"
-             << endl;
-        // if health == 0, destruc self!
-        this->decerseHealth(5);
-        return this->damage;
     }
 
     void setSword(string name)
@@ -167,49 +178,19 @@ public:
         }
         else
         {
-            // self destruct
-            cout << "can't find the sword.\n"
-                 << endl;
+            cout << "can't find the sword.\n" << endl;
+            delete this; // self destruct
         }
     }
 };
 
-class Drink : public RarityItems
+class Drink : public Items
 {
-private:
-    string name;             // nama minuman
-    int drink_value;         // value dari minuman, ga boleh lebih dari 40
-    bool is_expired = false; // expired dari minuman, kalo expired bisa bikin player meninggal
-
-    void setValue(string name, int value, bool exp, int stars)
-    {
-        this->name = name;
-        this->drink_value = value;
-        this->is_expired = exp;
-        // this->stars = star;
-        this->setStars(stars);
-    }
-
 public:
     Drink(const string &name)
     {
         this->setDrink(name);
-    }
-
-    string getName()
-    {
-        return this->name;
-    }
-
-    int getDrinkValue()
-    {
-        return this->drink_value;
-    }
-
-    bool getExpired()
-    {
-        return this->is_expired;
-    }
+    }  
 
     void setDrink(string name)
     {
@@ -226,42 +207,13 @@ public:
 };
 
 // class food(makanan) dimana bisa incerse/decerse health player
-class Food : public RarityItems
+class Food : public Items
 {
-private:
-    string name;             // nama makanan.
-    int food_value;          // value dari makanan, ga boleh > 40.
-    bool is_expired = false; // kalo expired dia bakal true.
-
-    void setValue(string name, int value, bool exp, int stars)
-    {
-        this->name = name;
-        this->food_value = value;
-        this->is_expired = exp;
-        // this->stars = stars;
-        this->setStars(stars);
-    }
-
 public:
     Food(const string &name)
     {
         this->setFood(name);
     };
-
-    string getName()
-    {
-        return this->name;
-    }
-
-    int getFoodValue()
-    {
-        return this->food_value;
-    }
-
-    bool getExpired()
-    {
-        return this->is_expired;
-    }
 
     void setFood(string name)
     {
@@ -276,35 +228,18 @@ public:
     }
 };
 
-class Emosi
-{
-private:
+class Person {
+public: 
+    string name;                                                                // nama player
+    int health = 100, hungry_level = 100, thirsty_level = 100;                  // utility dari player
+    string status;                                                              // status player, apakah pengembara, traveler, healer, etc.
     string playerEmoticon = "happy";
+    double level = 1;
 
-public:
     void setEmosi(string emosi)
     {
         this->playerEmoticon = emosi;
     }
-
-    string getEmosi()
-    {
-        return this->playerEmoticon;
-    }
-};
-
-// class ini mempunyai berfungsi untuk membuat object person.
-class Player : public Emosi
-{
-    // encapsulation: yang ada di dalam private tidak dapat di akses ke luar
-private:
-    string name;                                                                // nama player
-    int umur, health = 100, hungry_level = 100, thirsty_level = 100, level = 1; // utility dari player
-    string status;                                                              // status player, apakah pengembara, traveler, healer, etc.
-
-    // set default sword dan shielddari player
-    Sword userSword = Sword("pedangKayu");
-    Shield userShield = Shield("tamengKayu");
 
     // this method use getter setter and encapsulation
     void decereaseHungry(int value)
@@ -332,71 +267,79 @@ private:
 
     void incereaseLevel(Food food)
     {
-        if (food.getFoodValue() >= 10 && food.getFoodValue() <= 14)
+        if (food.value >= 10 && food.value <= 14)
         {
             this->level += 1;
         }
 
-        if (food.getFoodValue() >= 15 && food.getFoodValue() <= 19)
+        if (food.value >= 15 && food.value <= 19)
         {
             this->level += 1.5;
         }
 
-        if (food.getFoodValue() >= 20 && food.getFoodValue() <= 24)
+        if (food.value >= 20 && food.value <= 24)
         {
             this->level += 2;
         }
 
-        if (food.getFoodValue() >= 25 && food.getFoodValue() <= 29)
+        if (food.value >= 25 && food.value <= 29)
         {
             this->level += 2.5;
         }
 
-        if (food.getFoodValue() >= 30 && food.getFoodValue() <= 34)
+        if (food.value >= 30 && food.value <= 34)
         {
             this->level += 3;
         }
 
-        if (food.getFoodValue() >= 35 && food.getFoodValue() <= 39)
+        if (food.value >= 35 && food.value <= 39)
         {
             this->level += 4;
         }
 
-        if (food.getFoodValue() == 40)
+        if (food.value == 40)
         {
             this->level += 5;
         }
     }
 
-    // di cek kalo exp(food nya) bakalan ngurangin health 3x dari getFoodValue() nya
+    // di cek kalo exp(food nya) bakalan ngurangin health 3x dari value nya
     void inceraseHungry(Food food)
     {
-        // dicek kalo getFoodValue() nya > 25 / 35 change emotion ke happy (kan makannanya enak)
-        if (food.getExpired())
+        // dicek kalo value nya > 25 / 35 change emotion ke happy (kan makannanya enak)
+        if (food.is_expired)
         {
             this->setEmosi("angry");
-            this->decereaseHealth(food.getFoodValue() * 3);
-            this->decereaseHungry(food.getFoodValue() * 2);
+            this->decereaseHealth(food.value * 3);
+            this->decereaseHungry(food.value * 2);
         }
         else
         {
-            this->hungry_level += food.getFoodValue();
+            if(this->hungry_level + food.value > 100) {
+                this->hungry_level = 100;
+            } else {
+                this->hungry_level += food.value;
+            }
             this->incereaseLevel(food);
         }
     }
 
-    void incereasethirsty(Drink drink)
+    void incereaseThirsty(Drink drink)
     {
-        if (drink.getExpired())
+        if (drink.is_expired)
         {
             // this->emotion = "angry";
             this->setEmosi("angry");
-            this->decereaseHealth(drink.getDrinkValue() * 2);
-            this->decereaseThirsty(drink.getDrinkValue() * 4);
+            this->decereaseHealth(drink.value * 2);
+            this->decereaseThirsty(drink.value * 4);
         }
         else
         {
-            this->thirsty_level += drink.getDrinkValue();
+            if(this->thirsty_level + drink.value > 100) {
+                this->thirsty_level = 100;
+            } else {
+                this->thirsty_level += drink.value;
+            }
         }
     }
 
@@ -417,6 +360,7 @@ private:
         // dicek darah nya kalo udh 0 maka di set status meninggal, atau di hapus lewat descructor
         if (this->health == 0)
         {
+            delete this;
             // destruct
         }
     }
@@ -428,7 +372,7 @@ private:
         {
             // this->emotion = "sad";
             this->setEmosi("sad");
-        }
+        }   
 
         // kalo haus < 30
         if (this->thirsty_level <= 30)
@@ -445,21 +389,65 @@ private:
         }
     }
 
-    // todo: bikin destructor buat delete object nya.
+    void getPlayerInfo()
+    {
+        this->checkHealth();  // buat cek health nya
+
+        cout << "========= User Info ============" << endl;
+        cout << "Name: " << this->name << endl;
+        cout << "Level: " << this->level << endl;
+        cout << "Emotion: " << this->playerEmoticon << endl;
+        cout << "Type: " << this->status << endl;
+        cout << "Health: " << this->health << endl;
+        cout << "Hungry Level: " << this->hungry_level << endl;
+        cout << "Thirsty Level: " << this->thirsty_level << endl;
+        cout << "========= End User Info ==========" << endl;
+        cout << "\n" << endl;
+        // selain cout ada printf, namun sesuai kondisi digunakannya.
+    }
+};
+
+// this class for vialin / apalah yang berbau antagonis
+class Monster : public Person {
+public:
+    Monster(const string name, const string type) {
+        this->name = name;
+        this->status = type;
+        this->level = rand() % (100 - 13 -1) + 13; // get random number beetwen 12 - 100
+    }
+
+    // we need a tools for attack something. damnntttt
+
+    void getAttack(int damage) {
+        this->decereaseHealth(damage);
+    }
+};
+
+// class ini mempunyai berfungsi untuk membuat object person.
+class Player : public Person
+{
+    // encapsulation: yang ada di dalam private tidak dapat di akses ke luar
+private:
+    // set default sword dan shielddari player
+    Sword attackTools = Sword("pedangKayu");
+    Shield defenseTools = Shield("tamengKayu");
 
     // bisa diakses oleh siapa saja
 public:
+
     // constructor, accept name, age, stats player.
-    Player(const string &name, int umur, const string &status)
+    Player(const string &name, const string &status)
     {
         this->name = name;
-        this->umur = umur;
         this->status = status;
     };
+
+    // todo: bikin destructor buat delete object nya.
 
     // Start Getter Setter
 
     // show information about player
+    // override from method person.
     void getPlayerInfo()
     {
         this->checkHealth();  // buat cek health nya
@@ -467,49 +455,35 @@ public:
 
         cout << "========= User Info ============" << endl;
         cout << "Name: " << this->name << endl;
-        cout << "Umur: " << this->umur << endl;
-        cout << "Alat Perang: " << this->userSword.getName() << endl;
-        cout << "Alat Perang: " << this->userShield.getName() << endl;
+        cout << "Alat Perang: " << this->attackTools.name << endl;
+        cout << "Alat Perang: " << this->defenseTools.name << endl;
         cout << "Level: " << this->level << endl;
-        cout << "Emotion: " << this->getEmosi() << endl;
+        cout << "Emotion: " << this->playerEmoticon << endl;
         cout << "Status: " << this->status << endl;
         cout << "Health: " << this->health << endl;
         cout << "Hungry Level: " << this->hungry_level << endl;
         cout << "Thirsty Level: " << this->thirsty_level << endl;
         cout << "========= End User Info ==========" << endl;
-        cout << "\n"
-             << endl;
+        cout << "\n" << endl;
         // selain cout ada printf, namun sesuai kondisi digunakannya.
     }
 
     // method ini berfungsi untuk set/netapin new sword dari player.
     void setSword(Sword sword)
     {
-        this->userSword = sword; // set new sword
+        this->attackTools = sword; // set new sword
     }
 
     // method ini berfungsi untuk set/netapin new shield dari player.
     void setShield(Shield shield)
     {
-        this->userShield = shield;
-    }
-
-    // mendapatkan informasi sword dari player.
-    Sword getSword()
-    {
-        return this->userSword;
-    }
-
-    // menampilkan nama player
-    string getName()
-    {
-        return this->name;
+        this->defenseTools = shield;
     }
 
     // jika player mendapatkan penyerangan, maka kode ini akan dijalankan oleh player yang mendapat penyerangan.
     void getAttack(int attack)
     {
-        this->decereaseHealth(attack - this->userShield.useDefense(this->name));
+        this->decereaseHealth(attack - this->defenseTools.useDefense<Person>(*this));
     }
 
     // End Getter Setter
@@ -518,16 +492,14 @@ public:
     void eating(Food food)
     {
         this->inceraseHungry(food);
-        cout << "sedang memakan " << food.getName() << "\n"
-            << endl;
+        cout << this->name << " sedang memakan " << food.name << "\n" << endl;
     }
 
     // method untuk minum
     void drinking(Drink drink)
     {
-        this->incereasethirsty(drink);
-        cout << "sedang meminum " << drink.getName() << "\n"
-            << endl;
+        this->incereaseThirsty(drink);
+        cout << this->name << " sedang meminum " << drink.name << "\n" << endl;
     }
 
     // method untuk running / berlari
@@ -575,26 +547,40 @@ public:
 
     // TODO: cek time nya, makin tinggi time nya makin besar juga health incerse/bertambah.
     // method untuk tidur
-    void sleeping(int time)
+    // time ini harus berupa hour/jam
+    void sleeping(int hour)
     {
-        // if(int)
         this->inceraseHealth(20);
     }
 
-    void attack(Player *opponent)
+    template <typename Opponent>
+    void attack(Opponent *opponent)
     {
         // TODO:
-        // cek apakah level nya sama / lebih besar dari level musuh
-        // kalo lebih besar, yang getAttack adalah diri nya sendiri (this)
-        // kalo lebih kecil / sama, maka akan saling menyerang.
-        opponent->getAttack(this->getSword().useAttack(this->name));
+        // cek apakah level nya sama / lebih besar dari level musuh [done]
+        // kalo lebih besar, yang getAttack adalah diri nya sendiri (this) [done]
+        // kalo lebih kecil / sama, maka akan saling menyerang. [done]
+        // this method for attack PtoP (Person to Person) [done]
+        // i want implement to monster can be attack or attacking.
+         if(this->level > opponent->level) {
+            opponent->getAttack(this->attackTools.useAttack(*this));
+            opponent->health >= 100 ? opponent->level += 1 : this->level;
+        } else if(opponent->level > this->level) {
+            this->getAttack(this->attackTools.useAttack(*opponent));
+            this->health >= 100 ? this->level += 1 : this->level;
+        } else {
+            opponent->getAttack(this->attackTools.useAttack(*this));
+            this->getAttack(opponent->attackTools.useAttack(*opponent));
+            //check if opponent health  == 100, maka bakal nambah level 1;
+            opponent->health >= 100 ? opponent->level += 1 : this->level;
+            this->health >= 100 ? this->level += 1 : this->level;
+        }
     }
 };
 
 Player *createPlayer()
 {
     string namaPlayer;
-    int umurPlayer;
     string statusPlayer;
 
     cout << "Welcome to the game! \n";
@@ -607,20 +593,9 @@ Player *createPlayer()
     cout << "Masukan status kamu: ";
     getline(cin, statusPlayer);
 
-    cout << "Masukan umur kamu: ";
-    // getline(cin, namaplayer); // khusus string
-    cin >> umurPlayer; // khusus int
-
     cout << endl;
 
-    if (umurPlayer <= 12)
-    {
-        cout << "Tidak dapat membuat player, masih terlalu muda" << endl;
-        // return createPlayer();
-        exit(1);
-    }
-
-    Player *player = new Player(namaPlayer, umurPlayer, statusPlayer);
+    Player *player = new Player(namaPlayer, statusPlayer);
     return player;
 }
 
@@ -629,17 +604,30 @@ int main()
     Player *player1 = createPlayer();
     player1->getPlayerInfo();
 
-    Player *player2 = new Player("random1", 16, "yey");
+    Player *player2 = new Player("random1", "yey");
+    Monster *ranMonster = new Monster("MonsterHitam", "epic");
+
+    ranMonster->getPlayerInfo();
 
     Sword swordDiamond("pedangDiamond");
 
+    Food ayamGeprek("Ayam Geprek");
+
     player1->setSword(swordDiamond);
 
-    player1->attack(player2);
+    player1->attack<Player>(player2);
+    // player1->attack<Monster>(ranMonster);
+    // player2->attack(ranMonster);
 
     player2->getPlayerInfo();
     player1->getPlayerInfo();
 
-    cin.get();
+    player2->eating(ayamGeprek);
+
+    player2->attack(player1);
+
+    player2->getPlayerInfo();
+    player1->getPlayerInfo();
+
     return 1;
 }
