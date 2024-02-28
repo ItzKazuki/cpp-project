@@ -50,7 +50,7 @@ public:
         this->is_expired = exp;
         // this->stars = star;
         this->setStars(stars);
-    }  
+    } 
 };
 
 class AttackTools : public RarityItems {
@@ -616,11 +616,10 @@ int main()
     player1->setSword(swordDiamond);
 
     player1->attack<Player>(player2);
-    // player1->attack<Monster>(ranMonster);
-    // player2->attack(ranMonster);
 
     player2->getPlayerInfo();
     player1->getPlayerInfo();
+
 
     player2->eating(ayamGeprek);
 
